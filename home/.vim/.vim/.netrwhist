@@ -1,0 +1,9 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =7
+let g:netrw_dirhist_1='/mnt/user/appdata/home-assistant/config/groups/lights'
+let g:netrw_dirhist_2='/mnt/user/appdata/home-assistant/config/devices/bayesian'
+let g:netrw_dirhist_3='/mnt/user/appdata/home-assistant/config/alerts/automations'
+let g:netrw_dirhist_4='/mnt/user/appdata/home-assistant/config/customisations/views'
+let g:netrw_dirhist_5='/mnt/user/appdata/home-assistant/config/customisations/global/groups'
+let g:netrw_dirhist_6='/mnt/user/appdata/home-assistant/config/devices/lights/kitchen'
+let g:netrw_dirhist_7='/mnt/user/appdata/home-assistant/config/customisations'
