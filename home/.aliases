@@ -1,0 +1,27 @@
+modprobe ipmi_devintf
+modprobe ipmi_si
+LS_COLORS='di=1;31:fi=0:ln=31:pi=5:so=5:bd=5:cd=5:or=37:mi=0:ex=35:ow=1;95:*.rpm=90'
+export LS_COLORS
+
+alias dir="ls -alh --group-directories-first --color"
+alias dirm="ls -alh --group-directories-first --color | more"
+alias ll='ls -lhF --color=auto'
+alias llt='ls -lht --color=auto'
+alias lla='ls -alF --color=auto'
+alias la='ls -A --color=auto'
+alias l='ls -CF --color=auto'
+alias ls="ls --color=auto"
+alias vinginx='vi /mnt/user/appdata/letsencrypt/nginx/site-confs/default'
+alias vi='vim'
+alias backupConfig='/boot/config/backup.sh'
+alias import='docker exec -it beets bash /config/beets.sh '
+alias ipconfig='nmcli device show | grep IP4'
+alias checkvpn='/mnt/user/src/scripts/checkvpn'
+alias docker-compose='docker run --rm \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v "$PWD:$PWD" \
+    -w="$PWD" \
+    docker/compose:latest'
+
+
+source "$HOME/.homesick/repos/homeshick/homeshick.sh"
