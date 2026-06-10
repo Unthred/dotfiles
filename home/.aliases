@@ -44,4 +44,9 @@ alias haAgent='cd /mnt/cache/cursor-workspace/home-assistant && agent'
 alias unraidAgent='cd /mnt/cache/cursor-workspace/unraid && agent'
 alias firewallAgent='cd /mnt/cache/cursor-workspace/firewall && agent'
 
+# Claude agent — sysadmin workspaces on cache
+alias haClaude='cd /mnt/cache/cursor-workspace/home-assistant && claude'
+alias unraidClaude='cd /mnt/cache/cursor-workspace/unraid && claude'
+alias firewallClaude='cd /mnt/cache/cursor-workspace/firewall && claude'
+
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
