@@ -1,0 +1,26 @@
+disk_usage() {
+    df -h /mnt/user 2>/dev/null | awk 'NR==2 {print $5}'
+}
+unraid_status() {
+    local status="OK"
+    local color="\e[1;32m"   # green
+
+    if ! grep -q "md" /proc/mdstat; then
+        status="ARRAY DOWN"
+        color="\e[1;33m"
+    fi
+
+    if grep -qE "recovery|resync" /proc/mdstat; then
+        status="REBUILD"
+        color="\e[1;33m"
+    fi
+
+    if grep -q "_" /proc/mdstat; then
+        status="DEGRADED"
+        color="\e[1;31m"
+    fi
+
+    # output WITHOUT \[\]
+    echo -e "${color}${status}\e[0m"
+}
+export PS1='[\u@\h \W | $(date +%H:%M) | $(disk_usage) | $(unraid_status)]$ '

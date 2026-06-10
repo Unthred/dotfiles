@@ -1,10 +1,10 @@
-modprobe ipmi_devintf
-modprobe ipmi_si
+PATH=$PATH:/mnt/user/src/scripts:$HOME/.homesick/repos/homeshick
 LS_COLORS='di=1;31:fi=0:ln=31:pi=5:so=5:bd=5:cd=5:or=37:mi=0:ex=35:ow=1;95:*.rpm=90'
 export LS_COLORS
 
 alias dir="ls -alh --group-directories-first --color"
 alias dirm="ls -alh --group-directories-first --color | more"
+alias dirt="ls -altrh --group-directories-first --color --time-style=+%D | grep $(date +%D)"
 alias ll='ls -lhF --color=auto'
 alias llt='ls -lht --color=auto'
 alias lla='ls -alF --color=auto'
@@ -22,6 +22,21 @@ alias docker-compose='docker run --rm \
     -v "$PWD:$PWD" \
     -w="$PWD" \
     docker/compose:latest'
+alias importMusic='docker exec -it beets /config/beets.sh /downloads'
+alias importSoulseek='docker exec -it beets /config/beets.sh /soulseek'
+alias countDirs='ls -d */ |wc -l'
+alias countFiles='find $1 -type f | wc -l'
+alias soulseek='docker exec -it bash'
+alias dockerstats='docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"'
+alias immich="docker run -it --rm -v $(pwd):/import ghcr.io/immich-app/immich-cli:latest"
+alias duSpace='du -h --max-depth=1 '
+alias movePorn='mv /mnt/user/downloads/youtube/* /mnt/user/other/'
+alias immichImportDir="docker run -it --rm -v $1:/import ghcr.io/immich-app/immich-cli:latest upload --key jhNQduN0Bh2PF7IyCCfDuxIyEgtnxJOzSYduEPc --server https://images.YerADonkey.com/api"
+alias immichImport="docker run -it --rm -v $(pwd):/import ghcr.io/immich-app/immich-cli:latest upload --key jhNQduN0Bh2PF7IyCCfDuxIyEgtnxJOzSYduEPc --server https://images.YerADonkey.com/api"
 
+# tmux aliases
+
+alias nsh='ssh user@server "bash --norc --noprofile"'
+alias cockpit-reset='~/tmux-cockpit.sh'
 
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"

@@ -6,13 +6,19 @@ set backupdir-=.
 set backupdir^=~/tmp,/tmp
 set noundofile
 set number
+set expandtab
+set tabstop=4
+set shiftwidth=4
 hi LineNr term=NONE ctermfg=green ctermbg=black
 set statusline+='%F'
 syntax on
-set nosmartindent
+set smartindent
 set cindent
 filetype plugin indent on
 set cinkeys-=0#
 set indentkeys-=0#
 autocmd FileType * set cindent "some file types override it
-
+" Make comments brighter
+highlight Comment ctermfg=cyan
+set clipboard=unnamedplus
+set pastetoggle=<F2>
