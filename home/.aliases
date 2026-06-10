@@ -39,4 +39,9 @@ alias immichImport="docker run -it --rm -v $(pwd):/import ghcr.io/immich-app/imm
 alias nsh='ssh user@server "bash --norc --noprofile"'
 alias cockpit-reset='~/tmux-cockpit.sh'
 
+# Cursor agent — sysadmin workspaces on cache
+alias haAgent='cd /mnt/cache/cursor-workspace/home-assistant && agent'
+alias unraidAgent='cd /mnt/cache/cursor-workspace/unraid && agent'
+alias firewallAgent='cd /mnt/cache/cursor-workspace/firewall && agent'
+
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
