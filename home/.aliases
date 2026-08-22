@@ -39,14 +39,43 @@ alias immichImport="docker run -it --rm -v $(pwd):/import ghcr.io/immich-app/imm
 alias nsh='ssh user@server "bash --norc --noprofile"'
 alias cockpit-reset='~/tmux-cockpit.sh'
 
-# Cursor agent — sysadmin workspaces on cache
-alias haAgent='cd /mnt/cache/cursor-workspace/home-assistant && agent'
-alias unraidAgent='cd /mnt/cache/cursor-workspace/unraid && agent'
-alias firewallAgent='cd /mnt/cache/cursor-workspace/firewall && agent'
+# Create-or-attach a dedicated tmux session for a workspace/agent pair.
+# Uses switch-client (not attach) when already inside tmux (we always are,
+# since .bashrc auto-attaches to "cockpit") to avoid nested-tmux sessions,
+# which break mouse reporting / scroll / copy.
+# The explicit `cd` (rather than relying on `new-session -c`) is required:
+# /etc/profile does an unconditional `cd $HOME` on every shell startup,
+# which would otherwise override the pane's starting directory.
+_agent_tmux() {
+  local name="$1" dir="$2" cmd="$3"
 
-# Claude agent — sysadmin workspaces on cache
-alias haClaude='cd /mnt/cache/cursor-workspace/home-assistant && claude'
-alias unraidClaude='cd /mnt/cache/cursor-workspace/unraid && claude'
-alias firewallClaude='cd /mnt/cache/cursor-workspace/firewall && claude'
+  if ! tmux has-session -t "=$name" 2>/dev/null; then
+    tmux new-session -d -s "$name" -c "$dir"
+    tmux send-keys -t "$name" "cd \"$dir\" && $cmd" C-m
+  fi
 
+  if [ -n "$TMUX" ]; then
+    tmux switch-client -t "$name"
+  else
+    tmux attach -t "$name"
+  fi
+}
+
+# Cursor agent — sysadmin workspaces on cache, each in its own tmux session
+alias haAgent='_agent_tmux haAgent /mnt/cache/cursor-workspace/home-assistant agent'
+alias unraidAgent='_agent_tmux unraidAgent /mnt/cache/cursor-workspace/unraid agent'
+alias unraidAgent2='_agent_tmux unraidAgent2 /mnt/cache/cursor-workspace/unraid agent'
+alias firewallAgent='_agent_tmux firewallAgent /mnt/cache/cursor-workspace/firewall agent'
+
+# Claude agent — sysadmin workspaces on cache, each in its own tmux session
+alias haClaude='_agent_tmux haClaude /mnt/cache/cursor-workspace/home-assistant claude'
+alias unraidClaude='_agent_tmux unraidClaude /mnt/cache/cursor-workspace/unraid claude'
+alias firewallClaude='_agent_tmux firewallClaude /mnt/cache/cursor-workspace/firewall claude'
+agentLast() {
+    local session="${1:?Usage: agentLast <tmux-session> [lines]}"
+    local lines="${2:-500}"
+
+    tmux capture-pane -p -S "-$lines" -t "$session" 2>/dev/null |
+        less
+}
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"

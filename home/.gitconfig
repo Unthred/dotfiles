@@ -3,3 +3,13 @@
 	name = Unthred
 [credential]
 	helper = cache --timeout 3600
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[alias]
+	push = !git-safe push
+	commit = !git-safe commit
+	pull = !git-safe pull
+[safe]
+	directory = /mnt/cache/cursor-workspace/home-assistant/config-repo
+	directory = $HB
+	directory = $WT
