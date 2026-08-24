@@ -78,4 +78,6 @@ agentLast() {
     tmux capture-pane -p -S "-$lines" -t "$session" 2>/dev/null |
         less
 }
+alias fixUnraidAgent='tmux detach-client -s unraidAgent'
+
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
