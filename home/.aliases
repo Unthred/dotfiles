@@ -79,5 +79,6 @@ agentLast() {
         less
 }
 alias fixUnraidAgent='tmux detach-client -s unraidAgent'
+alias fixUnraidAgent2='tmux detach-client -s unraidAgent2'
 
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
