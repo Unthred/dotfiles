@@ -71,6 +71,12 @@ alias firewallAgent='_agent_tmux firewallAgent /mnt/cache/cursor-workspace/firew
 alias haClaude='_agent_tmux haClaude /mnt/cache/cursor-workspace/home-assistant claude'
 alias unraidClaude='_agent_tmux unraidClaude /mnt/cache/cursor-workspace/unraid claude'
 alias firewallClaude='_agent_tmux firewallClaude /mnt/cache/cursor-workspace/firewall claude'
+
+# Codex agent - sysadmin workspaces on cache, each in its own tmux session
+alias unraidCodex='_agent_tmux unraidCodex /mnt/cache/cursor-workspace/unraid codex'
+alias firewallCodex='_agent_tmux firewallCodex /mnt/cache/cursor-workspace/firewall codex'
+alias haCodex='_agent_tmux haCodex /mnt/cache/cursor-workspace/home-assistant codex'
+
 agentLast() {
     local session="${1:?Usage: agentLast <tmux-session> [lines]}"
     local lines="${2:-500}"
