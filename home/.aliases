@@ -39,52 +39,77 @@ alias immichImport="docker run -it --rm -v $(pwd):/import ghcr.io/immich-app/imm
 alias nsh='ssh user@server "bash --norc --noprofile"'
 alias cockpit-reset='~/tmux-cockpit.sh'
 
-# Create-or-attach a dedicated tmux session for a workspace/agent pair.
-# Uses switch-client (not attach) when already inside tmux (we always are,
-# since .bashrc auto-attaches to "cockpit") to avoid nested-tmux sessions,
-# which break mouse reporting / scroll / copy.
-# The explicit `cd` (rather than relying on `new-session -c`) is required:
-# /etc/profile does an unconditional `cd $HOME` on every shell startup,
-# which would otherwise override the pane's starting directory.
-_agent_tmux() {
-  local name="$1" dir="$2" cmd="$3"
+# Unified AI launcher. It creates detached sessions and then switches the
+# current tmux client, so nested tmux clients are never needed.
+alias ai='/root/bin/ai-agent'
 
-  if ! tmux has-session -t "=$name" 2>/dev/null; then
-    tmux new-session -d -s "$name" -c "$dir"
-    tmux send-keys -t "$name" "cd \"$dir\" && $cmd" C-m
-  fi
-
-  if [ -n "$TMUX" ]; then
-    tmux switch-client -t "$name"
-  else
-    tmux attach -t "$name"
-  fi
-}
-
-# Cursor agent — sysadmin workspaces on cache, each in its own tmux session
-alias haAgent='_agent_tmux haAgent /mnt/cache/cursor-workspace/home-assistant agent'
-alias unraidAgent='_agent_tmux unraidAgent /mnt/cache/cursor-workspace/unraid agent'
-alias unraidAgent2='_agent_tmux unraidAgent2 /mnt/cache/cursor-workspace/unraid agent'
-alias firewallAgent='_agent_tmux firewallAgent /mnt/cache/cursor-workspace/firewall agent'
-
-# Claude agent — sysadmin workspaces on cache, each in its own tmux session
-alias haClaude='_agent_tmux haClaude /mnt/cache/cursor-workspace/home-assistant claude'
-alias unraidClaude='_agent_tmux unraidClaude /mnt/cache/cursor-workspace/unraid claude'
-alias firewallClaude='_agent_tmux firewallClaude /mnt/cache/cursor-workspace/firewall claude'
-
-# Codex agent - sysadmin workspaces on cache, each in its own tmux session
-alias unraidCodex='_agent_tmux unraidCodex /mnt/cache/cursor-workspace/unraid codex --yolo'
-alias firewallCodex='_agent_tmux firewallCodex /mnt/cache/cursor-workspace/firewall codex --yolo'
-alias haCodex='_agent_tmux haCodex /mnt/cache/cursor-workspace/home-assistant codex --yolo'
-
+# Show recent output from an agent session without attaching to it.
 agentLast() {
     local session="${1:?Usage: agentLast <tmux-session> [lines]}"
     local lines="${2:-500}"
 
-    tmux capture-pane -p -S "-$lines" -t "$session" 2>/dev/null |
-        less
+    tmux capture-pane -p -S "-$lines" -t "$session" 2>/dev/null | less
 }
-alias fixUnraidAgent='tmux detach-client -s unraidAgent'
-alias fixUnraidAgent2='tmux detach-client -s unraidAgent2'
+
+# Compatibility names; all route through `ai` and preserve existing sessions.
+alias haAgent='ai home-assistant cursor'
+alias unraidAgent='ai unraid cursor'
+alias unraidAgent2='ai unraid-secondary cursor'
+alias overseerAgent='ai overseer cursor'
+alias implementerAgent='ai implementer cursor'
+alias firewallAgent='ai firewall cursor'
+alias haCodex='ai home-assistant codex'
+alias unraidCodex='ai unraid codex'
+alias unraidCodex2='ai unraid-secondary codex'
+alias firewallCodex='ai firewall codex'
+alias fixHaAgent='ai --recover home-assistant cursor'
+alias fixUnraidAgent='ai --recover unraid cursor'
+alias fixUnraidAgent2='ai --recover unraid-secondary cursor'
+alias fixOverseerAgent='ai --recover overseer cursor'
+alias fixImplementerAgent='ai --recover implementer cursor'
+alias fixFirewallAgent='ai --recover firewall cursor'
+alias fixHaCodex='ai --recover home-assistant codex'
+alias fixUnraidCodex='ai --recover unraid codex'
+alias fixUnraidCodex2='ai --recover unraid-secondary codex'
+alias fixFirewallCodex='ai --recover firewall codex'
+
+# Setup command completion for tmux
+_tmux_complete() {
+  local cur=${COMP_WORDS[COMP_CWORD]}
+  local prev=${COMP_WORDS[COMP_CWORD-1]}
+  local cmd=${COMP_WORDS[1]}
+  local usage word i
+  local -a options=()
+  COMPREPLY=()
+
+  # tmux <Tab> — command names
+  if (( COMP_CWORD == 1 )); then
+    COMPREPLY=( $(compgen -W "$(tmux list-commands -F '#{command_list_name}')" -- "$cur") )
+    return
+  fi
+
+  # tmux attach-session -t <Tab> — existing sessions
+  if [[ $prev == -t && ( $cmd == attach || $cmd == attach-session ) ]]; then
+    COMPREPLY=( $(compgen -W "$(tmux list-sessions -F '#S' 2>/dev/null)" -- "$cur") )
+    return
+  fi
+
+  # tmux attach-session <Tab> — available flags
+  if [[ -z $cur || $cur == -* ]]; then
+    usage=$(tmux list-commands -F '#{command_list_usage}' "$cmd" 2>/dev/null) || return
+    for word in $usage; do
+      word=${word#\[}
+      [[ $word == -* ]] || continue
+      word=${word#-}
+      word=${word//[^[:alnum:]]/}
+      for ((i=0; i<${#word}; i++)); do
+        options+=("-${word:i:1}")
+      done
+    done
+    COMPREPLY=( $(compgen -W "${options[*]}" -- "$cur") )
+  fi
+}
+complete -F _tmux_complete tmux
+bind 'set show-all-if-ambiguous on'
 
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
