@@ -11,6 +11,10 @@ RSYNC_EXCLUDES=(
   --exclude='.claude.json'
   --exclude='.local/bin/claude'
   --exclude='.local/share/claude'
+  --exclude='.codex'
+  --exclude='.local/share/cursor-agent'
+  --exclude='.npm'
+  --exclude='.cache'
 )
 
 while inotifywait -r -e modify,create,delete,move /root 2>/dev/null; do
