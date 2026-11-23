@@ -11,3 +11,12 @@
 	pull = !git-safe pull
 [safe]
 	directory = /mnt/cache/cursor-workspace/home-assistant/config-repo
+	directory = /mnt/cache/cursor-workspace/unraid
+[core]
+	pager = cat
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/local/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/local/bin/gh auth git-credential
